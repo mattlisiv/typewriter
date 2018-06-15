@@ -14,7 +14,7 @@ var ignored = func(f os.FileInfo) bool {
 	return !strings.HasPrefix(f.Name(), "_") && !strings.HasPrefix(f.Name(), ".")
 }
 
-func getPackages(directive string, conf *Config) ([]*Package, error) {
+func getPackages(directive string, conf *Config, path string) ([]*Package, error) {
 	// wrap filter with default filter
 	filt := func(f os.FileInfo) bool {
 		if conf.Filter != nil {
@@ -25,7 +25,7 @@ func getPackages(directive string, conf *Config) ([]*Package, error) {
 
 	// get the AST
 	fset := token.NewFileSet()
-	astPkgs, err := parser.ParseDir(fset, "./", filt, parser.ParseComments)
+	astPkgs, err := parser.ParseDir(fset, path, filt, parser.ParseComments)
 
 	if err != nil {
 		return nil, err

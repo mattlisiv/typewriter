@@ -29,17 +29,17 @@ type App struct {
 }
 
 // NewApp parses the current directory, enumerating registered TypeWriters and collecting Types and their related information.
-func NewApp(directive string) (*App, error) {
-	return DefaultConfig.NewApp(directive)
+func NewApp(directive string, filepath string) (*App, error) {
+	return DefaultConfig.NewApp(directive, filepath)
 }
 
-func (conf *Config) NewApp(directive string) (*App, error) {
+func (conf *Config) NewApp(directive string, filePath string) (*App, error) {
 	a := &App{
 		Directive:   directive,
 		TypeWriters: typeWriters,
 	}
 
-	pkgs, err := getPackages(directive, conf)
+	pkgs, err := getPackages(directive, conf, filePath)
 
 	a.Packages = pkgs
 	return a, err
@@ -50,7 +50,7 @@ func NewAppFiltered(directive string, filter func(os.FileInfo) bool) (*App, erro
 	conf := &Config{
 		Filter: filter,
 	}
-	return conf.NewApp(directive)
+	return conf.NewApp(directive, "./")
 }
 
 // Individual TypeWriters register on init, keyed by name
@@ -168,7 +168,6 @@ func write(w *bytes.Buffer, a *App, p *Package, t Type, tw Interface, outputDir 
 	w.Write(twoLines)
 
 	packageName := p.Name()
-
 	if outputDir != nil {
 		packageName = getLastFolder(*outputDir)
 	}

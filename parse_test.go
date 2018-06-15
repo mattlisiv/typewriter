@@ -213,7 +213,7 @@ func tagsEqual(tags, other TagSlice) bool {
 
 func TestGetTypes(t *testing.T) {
 	// app and dummy types are marked up with +test
-	pkgs, err := getPackages("+test", DefaultConfig)
+	pkgs, err := getPackages("+test", DefaultConfig, "./")
 
 	if err != nil {
 		t.Error(err)
@@ -327,7 +327,7 @@ func TestGetTypes(t *testing.T) {
 		return !strings.HasPrefix(f.Name(), "dummy")
 	}
 
-	pkgs2, err2 := getPackages("+test", conf)
+	pkgs2, err2 := getPackages("+test", conf, "./")
 
 	if err2 != nil {
 		t.Error(err2)
@@ -350,7 +350,7 @@ func TestGetTypes(t *testing.T) {
 	}
 
 	// no false positives
-	pkgs3, err3 := getPackages("+notreal", DefaultConfig)
+	pkgs3, err3 := getPackages("+notreal", DefaultConfig, "./")
 
 	typs3 := pkgs3[0].Types
 
@@ -370,7 +370,7 @@ func TestGetTypes(t *testing.T) {
 		return f.Name() == "package.go"
 	}
 
-	_, err4 := getPackages("+test", conf4)
+	_, err4 := getPackages("+test", conf4, "./")
 
 	if err4 == nil {
 		t.Error("should have been unable to evaluate types of incomplete package")
